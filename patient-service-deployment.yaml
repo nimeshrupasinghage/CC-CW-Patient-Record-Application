@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: patient-service
+  labels:
+    app: patient-service
 spec:
   replicas: 2
   selector:
@@ -14,6 +16,19 @@ spec:
     spec:
       containers:
       - name: patient-service
-        image: nimeshrupasinghage/patient-service:v1
+        image: nimeshrupasinghage/patient-service:latest
         ports:
         - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: patient-service
+spec:
+  selector:
+    app: patient-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+  type: NodePort
