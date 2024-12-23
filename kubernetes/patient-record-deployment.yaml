@@ -19,5 +19,17 @@ spec:
         image: nimeshrupasinghage/patient-service:${GITHUB_SHA}
         ports:
         - containerPort: 80
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
       imagePullSecrets:
         - name: my-docker-secret
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
