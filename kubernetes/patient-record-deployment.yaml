@@ -19,3 +19,5 @@ spec:
         image: nimeshrupasinghage/patient-service:${GITHUB_SHA}
         ports:
         - containerPort: 80
+      imagePullSecrets:
+        - name: my-docker-secret
