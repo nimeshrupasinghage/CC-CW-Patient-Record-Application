@@ -68,8 +68,8 @@ jobs:
       run: |
         kubectl apply -f ./kubernetes/patient-record-deployment.yaml
 
-    # Step 11: Expose the Application
-    - name: Expose Patient Service
+    # Step 11: Deploy Service yaml
+    - name: Deploy Service yaml
       run: |
         kubectl apply -f ./kubernetes/patient-record-service.yaml 
 
