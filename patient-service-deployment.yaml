@@ -17,8 +17,9 @@ spec:
       containers:
       - name: patient-service
         image: nimeshrupasinghage/patient-service:latest
+        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 3000
+        - containerPort: 80
 ---
 apiVersion: v1
 kind: Service
@@ -30,5 +31,5 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 3000
-  type: NodePort
+    targetPort: 80
+  type: ClusterIP

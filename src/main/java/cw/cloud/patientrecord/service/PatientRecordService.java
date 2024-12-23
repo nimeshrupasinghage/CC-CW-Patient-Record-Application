@@ -24,4 +24,8 @@ public class PatientRecordService {
         existingPatient.setAge(patient.getAge());
         return patientRepository.save(existingPatient);
     }
+
+    public void deletePatient(Long id) {
+        patientRepository.deleteById(id);
+    }
 }
