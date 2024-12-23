@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: patient-service
 spec:
+  type: LoadBalancer
   selector:
     app: patient-service
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 80
-  type: ClusterIP
+      targetPort: 8080
