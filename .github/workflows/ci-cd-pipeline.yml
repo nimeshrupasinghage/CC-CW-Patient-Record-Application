@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main  # Trigger on push to the main branch
+      - main
   pull_request:
     branches:
       - main
@@ -13,27 +13,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    # Step 1: Setup Java
     - name: Set up JDK 17
       uses: actions/setup-java@v3
       with:
         distribution: 'temurin'
         java-version: '17'
-    # Step 1: Checkout the Code
+
+    # Step 2: Checkout the Code
     - name: Checkout Code
       uses: actions/checkout@v2
 
-    # Step 2: Set Up Docker
-    - name: Set up Docker
-      uses: docker/setup-buildx-action@v2
-
+    # Step 3: Build JAR
     - name: Build JAR
       run: mvn clean package
 
-    # Step 3: Build Docker Image
+    # Step 4: Set Up Docker
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v2
+
+    # Step 5: Build Docker Image
     - name: Build Docker Image
       run: docker build -t ${{ secrets.DOCKER_USERNAME }}/patient-service:${{ github.sha }} .
 
-    # Step 4: Push Docker Image to Docker Hub
+    # Step 6: Push Docker Image to Docker Hub
     - name: Push Docker Image
       env:
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -42,7 +45,7 @@ jobs:
         echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         docker push ${{ secrets.DOCKER_USERNAME }}/patient-service:${{ github.sha }}
 
-    # Step 5: Deploy to AWS EKS
+    # Step 7: Deploy to AWS EKS
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -50,21 +53,31 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
 
+    # Step 8: Update kubeconfig
     - name: Update kubeconfig for EKS
       run: |
         aws eks update-kubeconfig --region us-east-2 --name cc-cw-eks-cluster
 
+    # Step 9: Update Kubernetes Deployment
     - name: Update Kubernetes Deployment
       run: |
         sed -i "s|\${GITHUB_SHA}|${{ github.sha }}|g" ./kubernetes/patient-record-deployment.yaml
 
-
+    # Step 10: Deploy to AWS EKS
     - name: Deploy to Kubernetes
       run: |
         kubectl apply -f ./kubernetes/patient-record-deployment.yaml
 
+    # Step 11: Expose the Application
+    - name: Expose Patient Service
+      run: |
+        kubectl apply -f ./kubernetes/patient-record-service.yaml 
+
+    # Step 12: Verify Kubernetes Deployment
     - name: Verify Kubernetes Deployment
       run: |
         kubectl get pods
         kubectl get services
         kubectl describe deployment patient-service
+    
+     
