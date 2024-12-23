@@ -1,7 +1,5 @@
 name: CI/CD Pipeline
 
-
-
 on:
   push:
     branches:
@@ -44,9 +42,29 @@ jobs:
         echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         docker push ${{ secrets.DOCKER_USERNAME }}/patient-service:${{ github.sha }}
 
-    # Step 5: Deploy to Kubernetes (Optional)
-    - name: Deploy to Kubernetes
-      env:
-        KUBECONFIG: ${{ secrets.KUBECONFIG }}
+    # Step 5: Deploy to AWS EKS
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+
+    - name: Update kubeconfig for EKS
       run: |
-        kubectl apply -f ./kubernetes/patient-service-deployment.yaml
+        aws eks update-kubeconfig --region us-east-2 --name cc-cw-eks-cluster
+
+    - name: Update Kubernetes Deployment
+      run: |
+        sed -i "s|\${GITHUB_SHA}|${{ github.sha }}|g" ./kubernetes/patient-record-deployment.yaml
+
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f ./kubernetes/patient-record-deployment.yaml
+
+    - name: Verify Kubernetes Deployment
+      run: |
+        kubectl get pods
+        kubectl get services
+        kubectl describe deployment patient-service

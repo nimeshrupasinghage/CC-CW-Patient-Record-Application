@@ -16,20 +16,6 @@ spec:
     spec:
       containers:
       - name: patient-service
-        image: nimeshrupasinghage/patient-service:latest
-        imagePullPolicy: IfNotPresent
+        image: nimeshrupasinghage/patient-service:${GITHUB_SHA}
         ports:
         - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: patient-service
-spec:
-  selector:
-    app: patient-service
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
-  type: ClusterIP
