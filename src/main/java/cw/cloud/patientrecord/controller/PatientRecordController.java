@@ -34,7 +34,7 @@ public class PatientRecordController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/health")
+    @GetMapping("/healthCheck")
     public ResponseEntity<String> healthCheck() {
         return ResponseEntity.ok("Success");
     }
