@@ -34,9 +34,9 @@ public class PatientRecordController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/healthCheck")
-    public ResponseEntity<String> healthCheck() {
-        return ResponseEntity.ok("Success");
+    @GetMapping("/welcome")
+    public String getWelcomeMessage() {
+        return "Greetings from HealthSync";
     }
 
 }

@@ -71,11 +71,4 @@ jobs:
     # Step 11: Deploy Service yaml
     - name: Deploy Service yaml
       run: |
-        kubectl apply -f ./kubernetes/patient-record-service.yaml 
-
-    # Step 12: Verify Kubernetes Deployment
-    - name: Verify Kubernetes Deployment
-      run: |
-        kubectl get pods
-        kubectl get services
-        kubectl describe deployment patient-service
+        kubectl apply -f ./kubernetes/patient-record-service.yaml
