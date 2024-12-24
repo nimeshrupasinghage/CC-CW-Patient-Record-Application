@@ -46,7 +46,7 @@ jobs:
     # Step 8: Update kubeconfig
     - name: Update kubeconfig for EKS
       run: |
-        aws eks update-kubeconfig --region us-east-2 --name cc-cw-eks
+        aws eks update-kubeconfig --region us-east-2 --name cc-cw-test
     # Step 9: Update Kubernetes Deployment
     - name: Update Kubernetes Deployment
       run: |
