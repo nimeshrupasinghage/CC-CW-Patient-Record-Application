@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: patient-service
 spec:
-  type: LoadBalancer
+  type: ClusterIP #This means the service is only exposed within the cluster.
   selector:
     app: patient-service
   ports:
     - protocol: TCP
-      port: 80
-      targetPort: 8080
+      port: 8080 # Expose the service internally on port 8080
+      targetPort: 8080 # The target port your container

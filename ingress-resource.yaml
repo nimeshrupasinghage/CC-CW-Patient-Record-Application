@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: healthsync-service-ingress
+  namespace: default
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing  # Expose to the internet
+    alb.ingress.kubernetes.io/target-type: ip           # Use IP targets
+    alb.ingress.kubernetes.io/healthcheck-path: /health # Health check path
+spec:
+  rules:
+  - host: a9e7b4376255946d891357559a5e10bf-26033878.us-east-2.elb.amazonaws.com
+    http:
+      paths:
+      - path: /patient
+        pathType: Prefix
+        backend:
+          service:
+            name: patient-service
+            port:
+              number: 8080
+  - host: a9e7b4376255946d891357559a5e10bf-26033878.us-east-2.elb.amazonaws.com
+    http:
+      paths:
+      - path: /appointment
+        pathType: Prefix
+        backend:
+          service:
+            name: appointment-service
+            port:
+              number: 8085
+  - host: a9e7b4376255946d891357559a5e10bf-26033878.us-east-2.elb.amazonaws.com
+    http:
+      paths:
+      - path: /notification
+        pathType: Prefix
+        backend:
+          service:
+            name: notification-service
+            port:
+              number: 8090
+  - host: a9e7b4376255946d891357559a5e10bf-26033878.us-east-2.elb.amazonaws.com
+    http:
+      paths:
+      - path: /aggregator
+        pathType: Prefix
+        backend:
+          service:
+            name: aggregator-service
+            port:
+              number: 8095
