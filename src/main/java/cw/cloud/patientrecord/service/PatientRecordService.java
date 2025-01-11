@@ -3,7 +3,9 @@ package cw.cloud.patientrecord.service;
 import cw.cloud.patientrecord.entity.Patient;
 import cw.cloud.patientrecord.repository.PatientRecordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class PatientRecordService {
@@ -15,7 +17,7 @@ public class PatientRecordService {
     }
 
     public Patient getPatientById(Long id) {
-        return patientRepository.findById(id).orElseThrow(() -> new RuntimeException("Patient not found"));
+        return patientRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Patient not found"));
     }
 
     public Patient updatePatient(Long id, Patient patient) {
